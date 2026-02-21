@@ -27,8 +27,11 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="SMMADROOP API")
 app.include_router(admin.router)
 
-# CORS
+# CORS - More permissive for initial live sync
 allowed_origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+if "*" in allowed_origins:
+    allowed_origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
@@ -36,6 +39,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "environment": os.getenv("RENDER", "local"), "version": "1.0.0"}
 
 # Ensure uploads directory exists
 UPLOAD_DIR = Path("uploads")
