@@ -24,6 +24,39 @@ import admin
 # Create tables
 models.Base.metadata.create_all(bind=engine)
 
+def ensure_admin_exists():
+    db = SessionLocal()
+    try:
+        admin_email = "oubraimyassir@gmail.com"
+        admin_pass = "Jad.1233"
+        admin_user = db.query(models.User).filter(models.User.email == admin_email).first()
+        if not admin_user:
+            admin_user = models.User(
+                name="Yassir Oubraim",
+                email=admin_email,
+                password_hash=auth.get_password_hash(admin_pass),
+                role="admin",
+                is_active=True,
+                onboarding_completed=True,
+                balance=0.0
+            )
+            db.add(admin_user)
+            db.commit()
+            print(f"Created initial admin user: {admin_email}")
+        else:
+            # Ensure they are admin and active
+            if admin_user.role != "admin" or not admin_user.is_active:
+                admin_user.role = "admin"
+                admin_user.is_active = True
+                db.commit()
+                print(f"Updated user to admin: {admin_email}")
+    except Exception as e:
+        print(f"Error seeding admin: {e}")
+    finally:
+        db.close()
+
+ensure_admin_exists()
+
 app = FastAPI(title="SMMADROOP API")
 app.include_router(admin.router)
 
