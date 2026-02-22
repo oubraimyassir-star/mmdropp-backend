@@ -159,7 +159,8 @@ async def login(request: LoginRequest, db: Session = Depends(get_db)):
             "email": db_user.email,
             "role": db_user.role,
             "balance": db_user.balance,
-            "is_active": db_user.is_active
+            "is_active": db_user.is_active,
+            "onboarding_completed": db_user.onboarding_completed
         }
     }
 
@@ -203,7 +204,8 @@ async def google_login(request: GoogleLoginRequest, db: Session = Depends(get_db
             "email": db_user.email,
             "role": db_user.role,
             "balance": db_user.balance,
-            "is_active": db_user.is_active
+            "is_active": db_user.is_active,
+            "onboarding_completed": db_user.onboarding_completed
         }
     }
 
