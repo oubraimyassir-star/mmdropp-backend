@@ -876,7 +876,8 @@ async def get_my_profile(
 async def complete_onboarding(
     data: schemas.OnboardingData,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(auth.get_current_user)
+    current_user: models.User = Depends(auth.get_current_user),
+    _ = Depends(check_maintenance_mode)
 ):
     """Save onboarding data and mark as completed."""
     current_user.onboarding_completed = True
@@ -994,7 +995,11 @@ async def create_order(
     return new_order
 
 @app.get("/billing/me")
-async def get_my_billing(db: Session = Depends(get_db), current_user: models.User = Depends(auth.get_current_user)):
+async def get_my_billing(
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(auth.get_current_user),
+    _ = Depends(check_maintenance_mode)
+):
     return {
         "balance": current_user.balance,
         "currency": current_user.currency,
