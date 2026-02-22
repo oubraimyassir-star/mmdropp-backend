@@ -144,11 +144,11 @@ async def login(request: LoginRequest, db: Session = Depends(get_db)):
 
     # Note: Google accounts have is_active=True usually,
     # Standard accounts need admin activation.
-    # if not db_user.is_active:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_403_FORBIDDEN,
-    #         detail="Votre compte est en attente d'activation par l'administrateur."
-    #     )
+    if not db_user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Votre compte est en attente d'activation par l'administrateur."
+        )
 
     access_token = auth.create_access_token(data={"sub": db_user.email})
     return {
