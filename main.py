@@ -75,7 +75,7 @@ app.add_middleware(
 
 @app.get("/health")
 async def health_check():
-    return {"status": "ok", "environment": os.getenv("RENDER", "local"), "version": "1.0.0"}
+    return {"status": "ok", "environment": os.getenv("RENDER", "local"), "version": "1.0.0", "deployed_at": "2026-02-22T01:21:00Z"}
 
 # Ensure uploads directory exists
 UPLOAD_DIR = Path("uploads")
